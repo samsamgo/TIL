@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+    <form action="/send" method="post">
+        <input type="text" name="message" placeholder="Enter your message">
+        <input type="submit" value="Send">
+    </form>
+    <ul id="messages"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on("message", (message) => {
+            const li = document.createElement("li");
+            li.innerText = message;
+            document.getElementById("messages").appendChild(li);
+        });
+
+        socket.emit("join", {
+            name: localStorage.getItem("name")
+        });
+
+        document.getElementById("send").addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const message = event.target.querySelector("input[name=message]").value;
+            socket.emit("message", message);
+        });
+    </script>
+</body>
+</html>
