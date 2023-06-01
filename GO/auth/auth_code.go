@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"golang.org/x/oauth2"
@@ -8,6 +9,7 @@ import (
 
 func main() {
 	// Create an OAuth2 client.
+	ctx := context.Background()
 	client := oauth2.NewClient(oauth2.Config{
 		ClientID:     "YOUR_CLIENT_ID",
 		ClientSecret: "YOUR_CLIENT_SECRET",
@@ -18,7 +20,7 @@ func main() {
 	})
 
 	// Get the authorization URL.
-	authURL := client.AuthCodeURL("YOUR_REDIRECT_URI")
+	authURL := client.AuthCodeURL("YOUR_REDIRECT_URI", oauth2.AccessTypeOffline)
 
 	// Redirect the user to the authorization URL.
 	fmt.Println("Visit the following URL in your browser:", authURL)
@@ -29,7 +31,7 @@ func main() {
 	fmt.Scanf("%s", &code)
 
 	// Exchange the authorization code for an access token.
-	token, err := client.Exchange(oauth2.NoContext, code)
+	token, err := client.Exchange(ctx, code)
 	if err != nil {
 		panic(err)
 	}
